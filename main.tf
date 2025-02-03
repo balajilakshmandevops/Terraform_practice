@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "example" {
-    ami = var.ami_id"
+    ami = var.ami_id
     instance_type = "t2.micro"
     tags = {
         Name = "terraform-example"
@@ -19,8 +19,10 @@ variable "ami_id" {
     default = "ami-0c55b159cbfafe1f0"
 }
 
-backend "s3" {
+terraform {
+  backend "s3" {
     bucket = "terraform-state-123"
     key = "terraform.tfstate"
     region = "ap-south-1"
+  }
 }
