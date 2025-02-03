@@ -2,27 +2,21 @@ provider "aws" {
     region = "ap-south-1"
 }
 
-resource "aws_instance" "example" {
-    ami = var.ami_id
-    instance_type = "t2.micro"
-    tags = {
-        Name = "terraform-example"
-    }
-}
-
 resource "aws_s3_bucket" "example" {
     bucket = "terraform-state-123"
 }
 
-variable "ami_id" {
-    type = string
-    default = "ami-0c55b159cbfafe1f0"
+resource "aws_dynambodb_table" "dynamodb-terraform-state-lock" {
+    name = "terraform-state-lock-dynamo"
+    hash_key = "LockID"
+    read_capacity = 20
+    write_capacity = 20
+    attribute {
+        name = "LockID"
+        type = "S"
+    }
+    tags = {
+        Name = "DynamoDB Terraform State Lock Table"
+    }
 }
 
-terraform {
-  backend "s3" {
-    bucket = "terraform-state-123"
-    key = "terraform.tfstate"
-    region = "ap-south-1"
-  }
-}
